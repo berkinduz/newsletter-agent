@@ -8,8 +8,22 @@ Bu repo bir SaaS, mail servisi veya hazır çalışan otomasyon değildir. Pytho
 çekirdeği çevrimdışı profil kontrolü, taze içerik seçimi, tekilleştirme,
 HTML/plain metin, CID görsel paketleme ve gönderim durum geçişlerini sağlar.
 Araştırmayı ajan yapar; mail ve zamanlama için ortamınızın gerçekten sunduğu
-araçlar ayrıca doğrulanır. Kodda mail gönderen veya zamanlama oluşturan istemci
-yoktur. Eksik bağlantı veya scheduler varsa kurulum o aşamada tamamlanmamıştır.
+araçlar ayrıca doğrulanır. Gmail MIME girdisi/geri okuması ve Library CAS
+işlemleri için küçük yardımcılar bulunur; dış araç çağrılarını ajan yapar.
+Eksik bağlantı veya scheduler varsa kurulum o aşamada tamamlanmamıştır.
+
+## Ajanla hızlı kurulum
+
+Repoyu kendi ChatGPT/Codex'inizde açıp şu mesajı verin:
+
+> Sincap Post'u benim için kur. AGENTS.md ve docs/onboarding.md akışını izle.
+> Önce mevcut araçları kontrol et ve sentetik önizlemeyi göster. Benden yalnız
+> bülten tercihlerimi ve gereken işlem izinlerini iste; teknik alanları sen doldur.
+
+[Somut onboarding akışı](docs/onboarding.md), mevcut Gmail/Library araçlarıyla
+taslak → raw doğrulama → gönderim, sürüm kontrollü ortak kayıt ve gerçek
+scheduled test adımlarını içerir. Teknik hesap/dosya kimliklerini ajan keşfedip
+özel kurulum kaydına yazar. HTML hazırlığı için aşağıdaki offline demo yeterlidir.
 
 ## İlk önizleme
 

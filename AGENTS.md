@@ -4,6 +4,11 @@
 `docs/support-matrix.md` dosyalarını oku. Kullanıcının güncel doğrudan talimatı
 önceliklidir. Başka proje, ortam, posta kutusu veya bülteni bu projeye ait sayma.
 
+Kurulum istendiğinde `docs/onboarding.md` içindeki somut ajan akışını uygula.
+Gmail/Library yardımcıları `sincap/onboarding.py` içindedir; araç girdisini
+programatik taşır, gerçek çağrıyı veya yetkiyi taklit etmez. Kimlikleri mevcut
+şema ve başarılı okumadan keşfet; kullanıcıya teknik alan doldurtma.
+
 Bu repo kendi başına dış işlem yetkisi vermez. Kurulum ve tanılama salt okunur
 bağlantı kontrolleriyle başlar. Mail ve zamanlama ancak kullanıcının açık
 talimatı kapsamında yapılır; mevcut açık yetkiyi gereksiz yere yeniden sorma.
