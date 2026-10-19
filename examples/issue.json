@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "language": "tr",
+  "issue_date": "2030-01-02",
+  "researched_at": "2030-01-02T08:00:00Z",
+  "opening": "Bu örnekteki yayınlar, olaylar ve metinler kurmacadır. Yalnızca bülten düzenini göstermek için hazırlanmıştır. Gerçek bir sayı, seçtiğiniz kaynaklardan o gün okunan yazılarla oluşturulur. Bilim ve kültür başlıkları da kendi ilgi alanlarınızla değiştirilebilir.",
+  "closing_question": "Bu hafta hangi soruya daha fazla zaman ayırmak istersiniz?",
+  "articles": [
+    {
+      "id": "demo-study",
+      "source_id": "demo-science",
+      "topic": "science",
+      "url": "https://science.example.invalid/articles/demo-study",
+      "doi": null,
+      "event_key": "synthetic-study",
+      "revision": "initial",
+      "published_at": "2030-01-02T07:00:00Z",
+      "updated_at": null,
+      "new_development": false,
+      "development_note": "",
+      "kind": "Araştırma haberi",
+      "title": "Örnek bir araştırmayı okurken sorulabilecek sorular",
+      "summary": "Bu kurmaca metin bir bilim haberinin bültende nasıl yer alabileceğini gösteriyor. Örnek Bilim yazısı, bir araştırmanın iddiasını değerlendirirken yönteme ve örnekleme bakmayı öneriyor. Katılımcı sayısı, ölçümün nasıl yapıldığı ve sonuçların hangi koşullarda elde edildiği, çıkarılacak sonucu değiştirebilir. Birlikte değişen iki özelliğin birinin diğerine neden olduğunu söylemek için ek kanıt gerekir. Başlıktaki güçlü bir ifade, çalışmanın bulgularından daha geniş olabilir. Farklı gruplarda tekrarlanan sonuçlar ise ilk bulgunun ne ölçüde genellenebileceğini anlamaya yardım eder. Bu metinde gerçek bir çalışma veya yeni bir bilimsel bulgu anlatılmıyor.",
+      "comment": "İyi bir soru bazen etkileyici bir sonuçtan daha kalıcıdır. Haberi okurken hangi ek bilginin fikrimizi değiştireceğini düşünmek, bir sonraki haberi değerlendirmeyi de kolaylaştırabilir.",
+      "body_read": true,
+      "read_note": "Sentetik düzen örneği; gerçek kaynak okuma kanıtı değildir.",
+      "image": null,
+      "image_decision": {"status": "text_only", "reason": "Sentetik örnekte haber fotoğrafı kullanılmaz.", "attempts": []}
+    },
+    {
+      "id": "demo-essay",
+      "source_id": "demo-culture",
+      "topic": "culture",
+      "url": "https://culture.example.invalid/articles/demo-essay",
+      "doi": null,
+      "event_key": "synthetic-essay",
+      "revision": "initial",
+      "published_at": "2030-01-01T18:00:00Z",
+      "updated_at": null,
+      "new_development": false,
+      "development_note": "",
+      "kind": "Deneme",
+      "title": "Bir okuma masasının açtığı küçük alan",
+      "summary": "Örnek Kültür için yazılmış bu kurmaca deneme, bir metne zaman ayırmanın gündelik ritmi nasıl değiştirebileceğini ele alıyor. Yazarın hayal ettiği masa, sessiz ve kusursuz bir oda olmak zorunda değil. Yolculukta açılan bir kitap veya günün sonunda okunan birkaç sayfa da aynı merakın başlangıcı olabilir. Yazı, okuma alışkanlığını bir performans yarışına çevirmek yerine insanın kendi sorularıyla ilişkilendiriyor. Bir paragrafta durmak, geri dönmek ve başka bir metne geçmek bu ilişkinin parçaları olarak anlatılıyor. Burada adı geçen yayın ve yazı gerçek değildir; kaynak atfı ve paragraf düzeni örneklenmektedir.",
+      "comment": "Okumaya ayrılan sürenin uzunluğundan önce, o sürede neye dikkat ettiğimiz anlamlı olabilir. Bir cümleden çıkan soru, uzun bir listenin tamamlanmasından daha çok iz bırakabilir.",
+      "body_read": true,
+      "read_note": "Sentetik düzen örneği; gerçek kaynak okuma kanıtı değildir.",
+      "image": null,
+      "image_decision": {"status": "text_only", "reason": "Sentetik örnekte eser veya haber fotoğrafı kullanılmaz.", "attempts": []}
+    }
+  ]
+}
