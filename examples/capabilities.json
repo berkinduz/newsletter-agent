@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "context": {"runtime": null, "repository_revision": null, "profile_sha256": null},
+  "checks": {
+    "source_access": {"status": "unverified", "checked_at": null, "evidence": null},
+    "html_preview": {"status": "unverified", "checked_at": null, "evidence": null},
+    "mail_identity": {"status": "unverified", "checked_at": null, "evidence": null},
+    "mail_draft_roundtrip": {"status": "unverified", "checked_at": null, "evidence": null},
+    "durable_state": {"status": "unverified", "checked_at": null, "evidence": null},
+    "self_test_delivery": {"status": "unverified", "checked_at": null, "evidence": null},
+    "scheduler_execution": {"status": "unverified", "checked_at": null, "evidence": null}
+  }
+}
