@@ -8,6 +8,7 @@
 !/docs/
 !/docs/adapters.md
 !/docs/editorial.md
+!/docs/onboarding.md
 !/docs/setup.md
 !/docs/support-matrix.md
 !/examples/
@@ -23,6 +24,7 @@
 !/sincap/core.py
 !/sincap/delivery.py
 !/sincap/mime.py
+!/sincap/onboarding.py
 !/sincap/render.py
 !/sincap/store.py
 !/templates/
@@ -31,5 +33,6 @@
 !/tests/test_core.py
 !/tests/test_delivery.py
 !/tests/test_mime.py
+!/tests/test_onboarding.py
 !/tests/test_privacy.py
 !/tests/test_store_and_cli.py

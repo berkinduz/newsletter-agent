@@ -6,8 +6,11 @@ URL/DOI/olay tekilleştirmesi; `render` HTML/plain ve görsel inceleme kaydı;
 gönderim geçişleri; `store` aynı dosya sisteminde CAS sağlar. CLI yalnız
 `init`, `doctor`, `prepare` sunar. Bunlar bağımsız test edilebilir çekirdektir.
 
-Mail/scheduler adaptörü bu repo içinde kurulmuş bir servis değildir. Aşağıdaki
-sözleşme, kullanıcının ajanının mevcut araç şemasına göre uygulayacağı sınırdır.
+Mail/scheduler adaptörü bu repo içinde kurulmuş bir servis değildir.
+`sincap.onboarding`, mevcut Gmail şeması için somut draft girdisi/raw doğrulaması
+ve Library için guarded replace/readback yardımcıları sağlar. Ajanın çağrı
+sırası ve iki Cloud görevi CAS testi [onboarding akışında](onboarding.md).
+Aşağıdaki sözleşme, kullanıcının ajanının mevcut araç şemasına göre uygulayacağı sınırdır.
 Araç bulunamıyorsa veya alanları desteklemiyorsa başarı taklidi yapılmaz.
 
 ## Mail ve kalıcı kayıt

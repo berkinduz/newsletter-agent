@@ -4,6 +4,10 @@ Bu sıra ajanla birlikte izlenir. Repo, kendi mevcut ChatGPT/Codex kullanımın
 ve bağlantıların üzerinde çalışır. Kurulum süreci mail, zamanlama veya yeni
 erişim izni oluşturmak için genel bir yetki değildir.
 
+Kullanıcı için giriş mesajı ve ajan için Gmail/Library çağrı sırası,
+[uygulanabilir onboarding akışında](onboarding.md). Aşağıdaki rehber tercihleri
+ve doğrulama aşamalarını açıklar; teknik araç alanlarını ajan doldurur.
+
 ## 1. Yetenekleri doğrula
 
 Ajan önce gerçek çalışma ortamını, repo dizinini/sürümünü, dosya ve shell
@@ -30,6 +34,8 @@ python3 -m sincap init
 
 `init` yalnız yeni dizin oluşturur; mevcut kaydı sıfırlamaz. Başlangıçta
 `.local/profile.json`, `.local/capabilities.json`, `.local/state.json` oluşur.
+Keşfedilen hesap, ortak kayıt ve scheduler referansları için özel
+`.local/installation.json` da oluşturulur; başlangıçta bu alanlar boştur.
 Birden fazla bağımsız profil gerekiyorsa başlangıçtan itibaren ayrı dizin ve
 kimlik kullan:
 

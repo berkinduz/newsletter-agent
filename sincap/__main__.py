@@ -9,6 +9,7 @@ import sys
 
 from .core import capability_gaps, digest, instant, new_history, require, select_articles, validate_profile
 from .mime import package
+from .onboarding import new_installation
 from .render import render
 from .store import LocalStore
 
@@ -55,6 +56,7 @@ def main():
             args.directory.mkdir(parents=True, mode=0o700)
             write(args.directory / "profile.json", initial_profile)
             write(args.directory / "capabilities.json", load(ROOT / "examples/capabilities.json"))
+            write(args.directory / "installation.json", new_installation(args.profile_id))
             LocalStore(args.directory / "state.json").create({"profile_id": args.profile_id, "history": new_history(), "deliveries": {}})
             print("Local synthetic config created. Delivery and scheduling are disabled. No apps checked.")
             return 0
@@ -98,6 +100,8 @@ def main():
         write(args.out / "newsletter.html", markup)
         write(args.out / "newsletter.txt", plain)
         write(args.out / "newsletter.eml", raw)
+        delivery["assets"] = [{key: value for key, value in asset.items() if key != "data"} for asset in assets]
+        write(args.out / "delivery.json", delivery)
         write(args.out / "report.json", {"schema_version": 1, "synthetic": args.demo, "issue_key": issue_key,
               "word_count": words, "article_ids": [x["id"] for x in articles], "omitted": omitted,
               "inline_images": len(assets), "editorial_sha256": delivery["editorial_sha256"],
