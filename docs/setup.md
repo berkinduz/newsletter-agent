@@ -1,156 +1,186 @@
-# Kendi ortamında kurulum
+# Set up in your own environment
 
-Bu sıra ajanla birlikte izlenir. Repo, kendi mevcut ChatGPT/Codex kullanımın
-ve bağlantıların üzerinde çalışır. Kurulum süreci mail, zamanlama veya yeni
-erişim izni oluşturmak için genel bir yetki değildir.
+**English** · [Türkçe](tr/setup.md)
 
-Kullanıcı için giriş mesajı ve ajan için Gmail/Library çağrı sırası,
-[uygulanabilir onboarding akışında](onboarding.md). Aşağıdaki rehber tercihleri
-ve doğrulama aşamalarını açıklar; teknik araç alanlarını ajan doldurur.
+Follow these steps with your agent using your existing ChatGPT/Codex environment
+and connections. Setup grants no general permission to send email, create
+schedules, or expand access. The [onboarding workflow](onboarding.md) provides
+the user prompt and concrete Gmail/Library call sequence; the agent fills in
+technical tool fields.
 
-## 1. Yetenekleri doğrula
+## 1. Verify capabilities
 
-Ajan önce gerçek çalışma ortamını, repo dizinini/sürümünü, dosya ve shell
-erişimini, Python'u, kaynak okuma aracını, görsel incelemeyi, mail araçlarını,
-kalıcı kayıt yolunu ve scheduler'ı kontrol eder. Araç adı görmek yeterli olmaz.
-Plan ve workspace sınırlarını [destek matrisinden](support-matrix.md) değerlendir.
+Check the actual runtime, repository path/revision, file and shell access,
+Python, source-reading tools, image inspection, email tools, durable record,
+and scheduler. Seeing a tool name is insufficient. Consider plan and workspace
+limits in the [support matrix](support-matrix.md).
 
-Mevcut mail bağlantısı varsa kullanıcının seçtiği hesapta zararsız profil
-okuması yap. Okunan hesap ile istenen göndereni eşleştir; kimlik tahmin etme.
-Bağlantı ekranı, yeniden giriş veya ek onay istenirse o bağımlılığı bildir.
-Kurulum adına yeni hesap, credential, plugin veya kapsam oluşturma.
+For an existing email connection, harmlessly read the selected account profile
+and match it to the intended sender. Do not guess identities. Report reconnect,
+sign-in, or approval dependencies. Do not create accounts, credentials, plugins,
+or permission scopes as part of setup.
 
-Eksikleri somut yaz: “Python dosya erişimi var, mail taslak aracı yok;
-HTML hazırlayabiliriz, gönderim kurulmadı.” Scheduler yoksa manuel hazırlık
-kullanılabilir; günlük çalışıyor denmez. `cloud_threads` veya özel bir Library
-aracı bu paketin bağımlılığı değildir.
+Describe gaps concretely: “Python and files are available; an email draft tool
+is missing. HTML preparation is ready; sending is not configured.” Without a
+scheduler, manual preparation remains available. This package does not require
+`cloud_threads` or a particular Library tool.
 
-## 2. Profili ve tek kalıcı kaydı seç
+## 2. Choose a profile and one durable record
+
+Ask “Should your newsletter be in Turkish or English?” with the other newsletter
+preferences, unless the user has already specified a language. Use `tr` for
+Turkish and `en` for English. Chat language does not decide newsletter language.
+The following commands show an English installation; use `--language tr` when
+Turkish was selected.
 
 ```sh
 bash scripts/setup.sh
-python3 -m sincap init
+python3 -m sincap init --language en
 ```
 
-`init` yalnız yeni dizin oluşturur; mevcut kaydı sıfırlamaz. Başlangıçta
-`.local/profile.json`, `.local/capabilities.json`, `.local/state.json` oluşur.
-Keşfedilen hesap, ortak kayıt ve scheduler referansları için özel
-`.local/installation.json` da oluşturulur; başlangıçta bu alanlar boştur.
-Birden fazla bağımsız profil gerekiyorsa başlangıçtan itibaren ayrı dizin ve
-kimlik kullan:
+`init` creates only a new directory and never resets existing records. It writes
+`.local/profile.json`, `capabilities.json`, `state.json`, and `installation.json`.
+Installation references for the account, shared record, and scheduler start
+empty. Independent profiles need separate directories and identities from the
+start, for example:
 
 ```sh
-python3 -m sincap init --directory .local/reading --profile-id reading
+python3 -m sincap init --language en --directory .local/reading --profile-id reading
 ```
 
-Profilde konu başlıklarını, kaynakların keşif URL'lerini, önceliklerini ve
-hariç tutulan kaynak kimliklerini seç. Kaynak listesi okunabilirlik veya kalite
-sertifikası değildir. Dili ve görünen `labels` metinlerini birlikte değiştir;
-Python çeviri yapmaz. Uzunluk için hedef dakika ve zorunlu min/max sözcük
-aralığını belirle; dakika yaklaşık 200 sözcük/dakika hesabıdır. Sözcük kontrolü
-açılış, özet ve yorum gövdelerini kapsar.
+Choose topics, source discovery URLs and priorities, and excluded source IDs.
+Listing a source does not certify its readability or quality. Configure the
+language as described below. Set target reading minutes and mandatory minimum
+and maximum word counts. Reading time assumes approximately 200 words/minute;
+the word check includes the opening, summaries, and commentary.
 
-Haber URL'si varsayılan olarak keşif URL'siyle aynı host'a ait olmalı. Feed
-sunucusu ve yayın sitesi farklıysa kaynağa açık bir `article_hosts` listesi
-ekle; ajan yalnız gerçekten seçilen yayın host'larını bu listeye yazar.
+Article URLs must share the discovery URL's host by default. When a feed and
+publication use different hosts, explicitly add the selected publication hosts
+to that source's `article_hosts` list.
 
-Göndereni, alıcıları ve imzayı kendin belirle. Bare adres kullan; Cc/Bcc yoktur.
-Bu sürüm aynı içeriği tek To zarfıyla paylaşır: birden fazla alıcı birbirinin
-adresini görür. Kullanıcı bu kapsamı seçmeden listeyi genişletme. Tek kişilik
-bültende yalnız kendi doğrulanmış adresini kullan. Saat IANA timezone ve
-`HH:MM` alanlarından alınır. Bayrakları şimdilik kapalı tut. JSON'da bayrağı
-açmak mail veya scheduler kurmaz.
+Choose sender, recipients, and signature. Use bare addresses; there is no Cc/Bcc.
+This version uses one shared To envelope, so multiple recipients see one
+another's addresses. Do not expand that scope without the user's choice. A
+personal newsletter should use only the owner's verified address. Set an IANA
+timezone and `HH:MM` delivery time. Keep delivery and schedule flags disabled
+during setup; enabling JSON flags does not configure external services.
 
-`state.json` aynı profil için tek kanonik kayıt olmalı. İlk kurulumdan sonra
-profil kimliğini değiştirerek yeni yayın geçmişi yaratma. Yerel `LocalStore`
-aynı dosya sistemi üzerinde CAS sağlar. Ayrı worktree veya Cloud görevinde
-`.local` kendiliğinden paylaşılmaz. Ortamlar arası atomik kayıt erişimi
-doğrulanmamışsa düzenli gönderim kurulamaz; [adaptör kuralları](adapters.md).
+`state.json` must be the profile's single canonical record. Do not change the
+profile ID after setup to create a fresh publication history. `LocalStore`
+provides CAS on the same filesystem; separate worktrees and Cloud tasks do not
+automatically share `.local`. Recurring delivery needs verified atomic access
+to the same record across runs; see [adapters](adapters.md).
 
-## 3. Kaynak testi ve HTML önizleme
+## Language selection
 
-Seçilen her etkin kaynaktan küçük bir örnek al: gerçek yayın tarihi ve
-yeterli görünür gövdeyi oku. RSS/arama kısa metni veya HTTP başarısı yetmez.
-Erişilemeyen kaynağı açık bırakıp çalışıyor deme; gerekirse devre dışı bırak.
-Bu bir üretim bülteni gönderimi değildir.
+`init --language en` creates an English starter; `init --language tr` creates a
+Turkish starter. English is the default for direct CLI use. Agent-led setup
+uses the user's explicit language preference. Each preset includes matching
+topic titles, source names, greeting, signature, and all five `labels` entries.
+English examples are in `examples/`; Turkish examples are in `examples/tr/`.
+Use a matching profile and synthetic issue:
 
-Önce `README` içindeki sentetik demoyu aç. Sonra ajan her gün güncel kaynakları
-okuyarak `examples/issue.json` biçiminde `.local/today.json` hazırlar. Gerçek
-günün `issue_date`, `researched_at`, içerik dili ve `synthetic: false` alanları
-gerekir. URL/DOI ve olay kimlikleri tekilleştirme içindir; anlamlı yeni gelişme
-yeni revision, gerçek güncelleme tarihi ve açık development_note gerektirir.
+```sh
+python3 -m sincap prepare --demo --profile examples/profile.json --input examples/issue.json --at 2030-01-02T08:30:00Z --out .local/demo-en
+python3 -m sincap prepare --demo --profile examples/tr/profile.json --input examples/tr/issue.json --at 2030-01-02T08:30:00Z --out .local/demo-tr
+```
 
-Görseller haberle eşleşen gerçek görsellerdir. [Editoryal rehber](editorial.md)
-ve [görsel sözleşmesi](adapters.md#görsel-devri) uygulanır. Haber görseli
-dosyaları ve inceleme kayıtları `.local` içinde kalır.
+For an existing installation, edit the canonical profile; do not rerun `init`.
+Update `language`, `greeting`, `signature`, `labels`, topic titles, and display
+source names together. Preserve the profile ID, real sources, addresses,
+timezone, preferences, and publication history. If automation already uses a
+shared record, commit the change there using CAS and readback.
+
+Each subsequent issue must match the profile's `language`. Have the agent write
+the opening, titles, article kinds, summaries, commentary, closing question, and
+image alternative text/credits in that language, retaining necessary proper
+names and attribution. Python does not translate existing articles. A changed
+profile hash requires renewed evidence for affected capability checks.
+
+`scheduled_test_prompt(..., language="en")` produces English operational
+instructions by default; `language="tr"` selects Turkish. This is separate
+from the newsletter content language. Custom profiles and matching issue inputs
+can use other content languages; built-in starters cover English and Turkish.
+CLI commands, diagnostics, and JSON keys use English; do not translate schema keys.
+
+## 3. Test sources and review HTML
+
+Read a small sample from every enabled source, verifying the publication date
+and enough visible body text. RSS/search snippets and HTTP success are insufficient.
+Disable inaccessible sources when needed; do not report them as working. This
+check does not send a production issue.
+
+Start with the synthetic demo in the README. For real issues the agent reads
+fresh sources daily and creates `.local/today.json` using `examples/issue.json`
+as the schema. Include the real `issue_date`, `researched_at`, chosen language,
+and `synthetic: false`. URL/DOI/event keys support deduplication; a meaningful
+new development requires a new revision, real update timestamp, and explicit
+`development_note`.
+
+Use real story-matching images under the [editorial guide](editorial.md) and
+[image contract](adapters.md#image-handoff). Keep image files and reviews in `.local`.
 
 ```sh
 python3 -m sincap prepare --input .local/today.json --state .local/state.json --out .local/preview-today
 ```
 
-Komut HTML/plain/MIME ve rapor üretir; gerçek provider taslağı oluşturmaz.
-`preview.html` dosyasını geniş ve dar ekranda aç: taşma, başlık/görsel/yorum
-sırası, alt metin, kredi ve kaynak bağlantılarını kontrol et. Mail HTML'sindeki
-CID'ler ayrı `newsletter.html` ve `newsletter.eml` dosyasında korunur; tarayıcı
-önizlemesinde yerel assets yoluna çevrilir. Bu dosyaların hiçbiri Git'e girmez.
+Review `preview.html` at wide and narrow widths for overflow, story/image/comment
+order, alt text, credits, and source links. `newsletter.html` and `newsletter.eml`
+retain CID links; the browser preview uses local assets paths. All output is private.
 
-## 4. Açık yetkiyle kendine test
+## 4. Test to yourself with explicit authorization
 
-Kullanıcının açık test talimatı geldiğinde alıcıyı yalnız mevcut bağlantıda
-zararsız okumayla doğrulanmış kendi adresine indir. Başka alıcıya test gönderme.
-Test için ayrı state/dizin ve `test/` issue anahtarı kullan; üretim kaydını veya
-sayı numarasını tüketme. Gönderilecek somut HTML/plain ve alıcı görünür olsun.
+After the user's explicit test instruction, restrict the recipient to their own
+address verified by a harmless read on the existing connection. Use a separate
+test state/directory and a `test/` issue key, preserving production history and
+numbering. Show the concrete HTML/plain text and recipient before sending.
 
-Mevcut araç destekliyorsa bir taslak oluştur, sonra taslağı geri okuyarak
-From/To/Subject, HTML/plain ve bütün CID byte'larını doğrula. Ardından yalnız
-hesap bağlantısı ve gerçek draft kimliğiyle gönder. Yerel `.eml` dosyası
-araç şeması tarafından desteklenmiyorsa alanları doğrulanmış MIME ağacına
-eşleştir; ham MIME desteği varmış gibi davranma. Doğal onayları koru.
+If supported, create a provider draft, read it back, and verify From/To/Subject,
+plain/HTML, and every CID byte. Send using only the verified connection and real
+draft ID. If the tool cannot accept local `.eml` files, map the verified MIME tree
+to its supported fields. Preserve native approvals.
 
-Provider sonucu ve Sent eşleşmesini kaydet; alıcının Inbox/görüntülemesini
-ayrıca doğrula. Belirsiz sonuçta tekrar gönderme. Üç inline görselle test
-isteniyorsa üçü de doğru byte/CID ile görünmeli. Offline üç CID testi, bu gerçek
-istemci kontrolünün yerine geçmez.
+Record the provider result and matching Sent evidence; verify Inbox appearance
+and rendering separately. Never resend on uncertainty. A requested three-image
+test must render all three with correct bytes/CIDs. Offline CID tests do not
+replace this real-client check.
 
-## 5. Gerçek scheduled test ve düzenli çalışma
+## 5. Verify a real scheduled run
 
-Mail testi geçmeden düzenli gönderim açma. Scheduler mevcut ve kullanıcı
-yetkiliyse önce tek seferlik gerçek bir scheduled test planla. Normal bir
-“şimdi çalıştır” çağrısı bu kanıtın yerine geçmez. Test yalnız kullanıcının
-kendisine gider; ayrı test state'i kullanır.
+Do not enable recurring delivery before the email test passes. With an available
+scheduler and user authorization, first schedule a real one-time self-test using
+separate test state. A manual “run now” call is not equivalent evidence.
 
-Gerçek tetiklenmede runtime, repo sürümü, doğru profil/hash, aynı tek kalıcı
-kayıt ve doğru mail hesabını yeniden doğrula. Dönen hedef etiketinin doğru
-görünmesine güvenme; gerçek işin nerede çalıştığını incele. Dosya/bağlantı/saat
-kapısı kontrolü başarısızsa mail göndermeden dur.
+During the actual trigger, recheck runtime, repo revision, profile/hash, the same
+canonical record, and the correct email account. Inspect where execution really
+occurs; a plausible target label is insufficient. Stop before sending if file,
+connection, or time gates fail.
 
-Scheduler saati IANA timezone ile kaydeder. Çalışma anında aynı timezone ile
-gerçek saate bak; erken tetiklenmede gönderme. Desteklenen yeniden planlama
-yolunu kullan veya beklenen saatte yeni tetikleme iste; sürekli VM varsayma.
-Yerel task için bilgisayar ve app açık olmalı. Dakikasında teslim garanti edilmez.
+Use the user's IANA timezone for both the schedule and real-time gate. Do not
+send early. Use supported rescheduling or a new trigger at the intended time;
+do not assume a continuously running VM. Local tasks need the computer and app
+running. Exact-minute delivery is not guaranteed.
 
-Kabul edilen schedule kaydı, gerçek çalışmanın doğru ortamda başlaması,
-provider kabulü ve Inbox görünümü ayrı kanıtlardır. Scheduler ve kalıcı kayıt
-bu testi geçmediyse düzenli yayın hazır değildir. Eski/başka projeye ait
-otomasyonları değiştirme veya tekrar etkinleştirme.
+Schedule acceptance, execution in the correct runtime, provider acceptance, and
+Inbox rendering are separate evidence. Do not change or reactivate automations
+belonging to other projects.
 
-## Kanıt kaydı
+## Evidence records
 
-Ajan gerçek işlemlerden sonra `.local/capabilities.json` içindeki context ve
-check alanlarını günceller. Kanıtlar bu runtime/repo sürümü ve `doctor` çıktısının
-güncel `profile_sha256` değeriyle eşleşir. Her `verified` check için gerçek
-işlem açıklaması ve ISO timezone'lu `checked_at` gerekir. Bu başlangıç,
-kontrollerin son 24 saatte yapılmasını ister; profil/hesap/ortam değişince
-etkilenen kontroller yeniden yapılır. Kimlikler ve ayrıntılı sonuçlar özel kalır.
+After real operations, update context and checks in `.local/capabilities.json`.
+Evidence must match this runtime/repo revision and the current `profile_sha256`
+reported by `doctor`. Each `verified` check needs an actual operation description
+and timezone-aware ISO `checked_at`. Checks expire after 24 hours; repeat affected
+checks when the profile, account, or environment changes. Keep identifiers and
+detailed results private.
 
 ```sh
 python3 -m sincap doctor --stage self-test
 python3 -m sincap doctor --stage scheduled
 ```
 
-İlk komuttaki `mail_draft_roundtrip`, açık test yetkisiyle oluşturulmuş taslağın
-kontrolüdür; eksikse henüz test gönderimine hazır değilsin. İkinci komuttaki
-`scheduler_execution`, gerçekten tetiklenen testin kanıtıdır. Çıkış kodu `0`,
-yalnız kaydedilen kanıtların eksiksiz ve güncel olduğunu gösterir; harici
-servislerin bağımsız otomatik sertifikası değildir. Engeller çözülmeden
-bayrakları açma veya kurulumu tamamlandı diye bildirme.
+`mail_draft_roundtrip` requires a draft created under explicit test authorization.
+`scheduler_execution` requires an actually triggered scheduled test. Exit code
+`0` means recorded evidence is complete and current, not that remote services
+were independently certified. Keep flags disabled and report incomplete setup
+until blockers are resolved.

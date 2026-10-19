@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "synthetic": true,
-  "language": "tr",
+  "language": "en",
   "issue_date": "2030-01-02",
   "researched_at": "2030-01-02T08:00:00Z",
-  "opening": "Bu örnekteki yayınlar, olaylar ve metinler kurmacadır. Yalnızca bülten düzenini göstermek için hazırlanmıştır. Gerçek bir sayı, seçtiğiniz kaynaklardan o gün okunan yazılarla oluşturulur. Bilim ve kültür başlıkları da kendi ilgi alanlarınızla değiştirilebilir.",
-  "closing_question": "Bu hafta hangi soruya daha fazla zaman ayırmak istersiniz?",
+  "opening": "The publications, events, and texts in this example are fictional. They were created only to demonstrate the newsletter layout. A real issue uses articles read that day from your chosen sources. You can also replace the science and culture sections with your own interests.",
+  "closing_question": "Which question would you like to spend more time on this week?",
   "articles": [
     {
       "id": "demo-study",
@@ -19,14 +19,14 @@
       "updated_at": null,
       "new_development": false,
       "development_note": "",
-      "kind": "Araştırma haberi",
-      "title": "Örnek bir araştırmayı okurken sorulabilecek sorular",
-      "summary": "Bu kurmaca metin bir bilim haberinin bültende nasıl yer alabileceğini gösteriyor. Örnek Bilim yazısı, bir araştırmanın iddiasını değerlendirirken yönteme ve örnekleme bakmayı öneriyor. Katılımcı sayısı, ölçümün nasıl yapıldığı ve sonuçların hangi koşullarda elde edildiği, çıkarılacak sonucu değiştirebilir. Birlikte değişen iki özelliğin birinin diğerine neden olduğunu söylemek için ek kanıt gerekir. Başlıktaki güçlü bir ifade, çalışmanın bulgularından daha geniş olabilir. Farklı gruplarda tekrarlanan sonuçlar ise ilk bulgunun ne ölçüde genellenebileceğini anlamaya yardım eder. Bu metinde gerçek bir çalışma veya yeni bir bilimsel bulgu anlatılmıyor.",
-      "comment": "İyi bir soru bazen etkileyici bir sonuçtan daha kalıcıdır. Haberi okurken hangi ek bilginin fikrimizi değiştireceğini düşünmek, bir sonraki haberi değerlendirmeyi de kolaylaştırabilir.",
+      "kind": "Research news",
+      "title": "Questions to ask when reading a sample study",
+      "summary": "This fictional text shows how a science story could appear in the newsletter. The Example Science article suggests examining methods and samples when evaluating a research claim. The number of participants, the way measurements were taken, and the conditions of the study can all affect the conclusion. Two features changing together do not establish that one causes the other; that requires additional evidence. A strong headline may reach beyond the study's findings. Results repeated in different groups can help reveal how widely an initial finding applies. This text describes no real study or new scientific result.",
+      "comment": "A good question can sometimes outlast an impressive result. Thinking about what additional evidence would change our minds can also make the next story easier to evaluate.",
       "body_read": true,
-      "read_note": "Sentetik düzen örneği; gerçek kaynak okuma kanıtı değildir.",
+      "read_note": "Synthetic layout example; not evidence of reading a real source.",
       "image": null,
-      "image_decision": {"status": "text_only", "reason": "Sentetik örnekte haber fotoğrafı kullanılmaz.", "attempts": []}
+      "image_decision": {"status": "text_only", "reason": "The synthetic example uses no news photographs.", "attempts": []}
     },
     {
       "id": "demo-essay",
@@ -40,14 +40,14 @@
       "updated_at": null,
       "new_development": false,
       "development_note": "",
-      "kind": "Deneme",
-      "title": "Bir okuma masasının açtığı küçük alan",
-      "summary": "Örnek Kültür için yazılmış bu kurmaca deneme, bir metne zaman ayırmanın gündelik ritmi nasıl değiştirebileceğini ele alıyor. Yazarın hayal ettiği masa, sessiz ve kusursuz bir oda olmak zorunda değil. Yolculukta açılan bir kitap veya günün sonunda okunan birkaç sayfa da aynı merakın başlangıcı olabilir. Yazı, okuma alışkanlığını bir performans yarışına çevirmek yerine insanın kendi sorularıyla ilişkilendiriyor. Bir paragrafta durmak, geri dönmek ve başka bir metne geçmek bu ilişkinin parçaları olarak anlatılıyor. Burada adı geçen yayın ve yazı gerçek değildir; kaynak atfı ve paragraf düzeni örneklenmektedir.",
-      "comment": "Okumaya ayrılan sürenin uzunluğundan önce, o sürede neye dikkat ettiğimiz anlamlı olabilir. Bir cümleden çıkan soru, uzun bir listenin tamamlanmasından daha çok iz bırakabilir.",
+      "kind": "Essay",
+      "title": "The small space a reading table opens up",
+      "summary": "This fictional essay for Example Culture explores how making time for a text can change the rhythm of a day. The table the writer imagines need not sit in a perfectly quiet room. A book opened on a journey or a few pages read at the end of the day can begin the same curiosity. The essay connects reading habits with a person's own questions rather than turning reading into a race for achievement. Pausing over a paragraph, returning to it, and moving to another text are described as parts of that relationship. Neither the publication nor the essay mentioned here is real; they illustrate attribution and paragraph layout.",
+      "comment": "What we pay attention to while reading may matter more than how long we read. A question sparked by one sentence can leave a deeper impression than finishing a long list.",
       "body_read": true,
-      "read_note": "Sentetik düzen örneği; gerçek kaynak okuma kanıtı değildir.",
+      "read_note": "Synthetic layout example; not evidence of reading a real source.",
       "image": null,
-      "image_decision": {"status": "text_only", "reason": "Sentetik örnekte eser veya haber fotoğrafı kullanılmaz.", "attempts": []}
+      "image_decision": {"status": "text_only", "reason": "The synthetic example uses no artwork or news photographs.", "attempts": []}
     }
   ]
 }

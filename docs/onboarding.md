@@ -1,45 +1,62 @@
-# Ajan için uygulanabilir kurulum akışı
+# Actionable setup workflow for the agent
 
-Kullanıcı repoyu kendi ChatGPT/Codex'ine açıp şunu söyleyebilir:
+**English** · [Türkçe](tr/onboarding.md)
 
-> Sincap Post'u benim için kur. AGENTS.md ve docs/onboarding.md akışını izle.
-> Önce mevcut araçları kontrol et ve sentetik önizlemeyi göster. Benden yalnız
-> bülten tercihlerimi ve gereken işlem izinlerini iste; teknik alanları sen doldur.
+The user can open the repository in their own ChatGPT/Codex environment and say:
 
-Bu bir agent-tool entegrasyonudur: aşağıdaki yardımcılar gerçek Gmail/Library
-çağrılarının girdisini ve doğrulamasını sağlar; dış çağrıyı ajan yapar. Python
-komutları mail göndermez. Kullanıcının kurulum isteğini bütün dış işlemler için
-sınırsız izin sayma. Mevcut açık yetkiyi kullan; eksik olan test/gönderim ve
-schedule yetkisini somut önizlemeden sonra sor. Bu rehberi geliştirmek veya
-offline denemek, provider taslağı/mail/schedule oluşturma yetkisi değildir.
+> Set up Sincap Post for me. Follow AGENTS.md and docs/onboarding.md.
+> Check the available tools first and show me the synthetic preview. Ask me only
+> for my newsletter preferences and required action permissions; discover and
+> fill in the technical fields yourself.
 
-## 1. Keşfet, tercihleri al, özel kaydı oluştur
+This is an agent/tool integration. Helpers below prepare and verify real
+Gmail/Library call inputs; the agent makes external calls. Python commands do
+not send email. A setup request is not unlimited external-action permission.
+Use authorization already given; request missing test/send/schedule permission
+after preparing a concrete preview. Developing this guide or testing it offline
+does not authorize creating provider drafts, email, or schedules.
 
-README/setup/AGENTS kontrollerini yap; `bash scripts/setup.sh` çalıştır.
-Mevcut `.local` varsa kaldığın aşamayı sürdür, `init` ile sıfırlama. Yeni
-kurulumda `python3 -m sincap init`, özel `installation.json` dosyasını da yaratır.
+## 1. Discover capabilities, ask preferences, create private records
 
-Araç kataloğundan gerçek şemaları oku. Kullanılabilir en küçük yol:
+Read README/setup/AGENTS and run `bash scripts/setup.sh`. If `.local` exists,
+resume the current stage; do not reset it with `init`. For a new installation,
+`python3 -m sincap init --language en` also creates private `installation.json`.
+Use `--language tr` if the user chooses Turkish.
 
-| İş | Gerekli mevcut araç ve alanlar |
+Inspect actual schemas in the tool catalog. The minimum usable route is:
+
+| Task | Required existing tools and fields |
 | --- | --- |
-| Hesap | Gmail `get_profile(link_id)`; link yalnız o anki şemadaki hesap listesinden. |
-| Taslak | `create_draft(link_id, from_address, to, subject, payload)`; nested MIME, content_id ve base64_url_content. |
-| Geri okuma | `read_email(link_id, message_id, format="raw")`; tam raw byte elde edilemiyorsa bu yol tamamlanmaz. |
-| Gönderim | `send_draft(link_id, draft_id)`; Sent arama/okuma da bulunmalı. |
-| Ortak kayıt | Library create/read/replace; replace'in `expected_current_version` alanı ve tam dosya okuma. |
-| Zamanlama | Mevcut scheduler create; ayrıca gerçekten bu repo/shell'e ulaşan hedef veya mevcut desteklenen dispatch yolu. |
+| Account | Gmail `get_profile(link_id)`; choose a link only from the current schema's account list. |
+| Draft | `create_draft(link_id, from_address, to, subject, payload)` with nested MIME, content_id, and base64_url_content. |
+| Readback | `read_email(link_id, message_id, format="raw")`; this route is incomplete if full raw bytes are unavailable. |
+| Send | `send_draft(link_id, draft_id)` and matching Sent search/read. |
+| Shared record | Library create/read/replace with `expected_current_version` and complete file reads. |
+| Schedule | Existing scheduler create plus a target or supported dispatch route that actually reaches this repo/shell. |
 
-Eksik araçta hangi aşamanın kullanılabildiğini söyle. İsim görünürlüğünü
-bağlantı başarısı sayma. Yeni servis, credential veya plugin kurma.
+When a tool is missing, explain which stage remains usable. Tool visibility is
+not connection success. Do not install new services, credentials, or plugins.
 
-Kullanıcıya topluca konu/kaynak tercihlerini, dil/uzunluk/imza ve yerel yayın
-saatini sor; zaten verilenleri tekrar sorma. Kaynak seçimini ajan araştırabilir.
-Birden fazla uygun mail hesabı varsa okunabilir hesap adlarıyla seçim iste.
-Başka projeye ait hesap/kayıt/otomasyonu devralma. Seçilen hesapta zararsız
-`get_profile` çağır; izin/reconnect ekranında o bağımlılığı beklet.
+Collect missing newsletter preferences together, in the user's conversation
+language. Do not ask again for answers already provided:
 
-Başarılı cevabın gerçek `structuredContent` nesnesiyle:
+- Topics and preferred/excluded sources; the agent can research source choices.
+- **“Should your newsletter be in Turkish or English?”**
+  In Turkish: **“Bültenin Türkçe mi, İngilizce mi olmasını istersiniz?”**
+  Record `tr` or `en` in `profile.language`. Do not infer this from chat language
+  or silently choose the CLI default during agent-led setup.
+- Reading length, greeting/signature, recipients, local delivery time, and timezone.
+
+Use the selected language for the starter profile and matching synthetic issue,
+then apply it to labels, topics, source display names, greeting, signature, and
+all agent-written issue text. Preserve proper names and attribution. For an
+existing profile, edit the same canonical record rather than initializing new
+history; revalidate affected capability evidence after the profile hash changes.
+
+If several mail accounts are suitable, offer readable account names for the
+user to choose. Do not inherit another project's account/state/automation. On
+the selected account, make a harmless `get_profile` call; respect any reconnect
+or approval dependency. With the actual successful `structuredContent` object:
 
 ```python
 from sincap import onboarding as o
@@ -47,26 +64,30 @@ installation["mail"] = o.mail_connection(selected_link, profile_reply["structure
 profile["delivery"]["sender"] = installation["mail"]["email"]
 ```
 
-Kimlikleri ajan doldurur; kullanıcıya link/file/draft/environment ID sorulmaz.
-Gerçek runtime, git origin/HEAD ve profil hash'ini özel kayda ekle. Kullanıcının
-seçtiği alıcıları profile yaz; ilk testin alıcısı aşağıda otomatik daraltılır.
-`delivery.enabled` ve `schedule.enabled` şimdilik false kalır.
+Discover identifiers yourself; do not ask for link/file/draft/environment IDs.
+Record the actual runtime, Git origin/HEAD, and profile hash privately. Put the
+user's chosen recipients in the profile; the first test is narrowed below.
+Keep `delivery.enabled` and `schedule.enabled` false at this stage.
 
-## 2. Önizlemeyi üret ve araç girdisine çevir
+## 2. Produce a preview and prepare tool inputs
 
-İlk demo için kullanıcının özelleştirilmiş profili yerine örnek profili kullan:
+Use a sample profile, not a customized production profile, for the first demo.
+Choose the command matching the user's language answer:
 
 ```sh
-python3 -m sincap prepare --demo --profile examples/profile.json --input examples/issue.json --at 2030-01-02T08:30:00Z --out .local/setup-preview
+# English
+python3 -m sincap prepare --demo --profile examples/profile.json --input examples/issue.json --at 2030-01-02T08:30:00Z --out .local/setup-preview-en
+# Turkish
+python3 -m sincap prepare --demo --profile examples/tr/profile.json --input examples/tr/issue.json --at 2030-01-02T08:30:00Z --out .local/setup-preview-tr
 ```
 
-Geniş/dar ekranda `preview.html` göster. Kullanıcının konu/kaynak/dil/uzunluk,
-imza ve saat tercihlerini asıl özel profile uygula. Gerçek sayıya geçerken kaynakların yeterli
-gövdesini/tarihini oku; görseller için normal erişim, byte ve piksel kontrolünü
-uygula. Sentetik veri gerçek kaynak okuma kanıtı değildir.
+Show `preview.html` at wide and narrow widths. Apply the user's topics, sources,
+language, length, signature, and time to the actual private profile. For a real
+issue read sufficient source bodies and verify dates; inspect image access,
+bytes, and pixels. Synthetic data is not real source-reading evidence.
 
-`prepare` artık `delivery.json` içinde zarfı, içerik hash'ini ve görsel
-manifestini de bırakır. Ajanın özel Python işinde:
+`prepare` writes the envelope, content hash, and image manifest in `delivery.json`.
+In the agent's private Python work:
 
 ```python
 bundle = o.load_bundle(preview_directory)
@@ -74,151 +95,156 @@ test = o.self_test_bundle(bundle, installation["mail"], unique_test_key)
 request = o.gmail_draft_args(test, installation["mail"])
 ```
 
-`unique_test_key`, ajan tarafından üretilen ve özel kayda alınan `test/` anahtarıdır.
-`request` tam `create_draft` girdisidir; bunu özel JSON dosyasında tut, tool'a
-programatik taşı. Base64 byte'ları model çıktısına/loga dökme. Testin değişen
-From/To/Subject alanlarını kullanıcıya göster. Henüz dış çağrı yapma.
+Generate a unique `test/` key and record it privately. `request` is the complete
+`create_draft` input: retain it in private JSON and transfer it programmatically
+to the tool. Do not print base64 bytes in model output or logs. Show the changed
+From/To/Subject to the user. Do not make the external call yet.
 
-## 3. Ayrı probe ile CAS'ı doğrula, sonra kanonik kaydı bağla
+## 3. Verify CAS on a disposable probe, then bind canonical state
 
-Library yoksa aynı dosya sisteminde manuel kullanım mümkündür; ayrı Cloud
-görevleri için düzenli yayın kurulamaz. Mevcut Library skill'inin tam okuma,
-materialization, xattr ve writeback kurallarını kullan.
+Without Library, manual use on one filesystem remains possible; recurring
+publication across isolated Cloud tasks is not ready. Follow the current
+Library skill's full-read, materialization, xattr, and writeback rules.
 
-Önce ayrı, sentetik ve tek kullanımlık bir özel Library probe dosyası oluştur.
-Örneğin ilk JSON `{"version":0,"data":{"probe_only":true,"marker":"initial"}}`
-olsun; gerçek profil, ledger, alıcı, mail veya geçmiş içermesin. Dönen gerçek
-referansı `installation.shared_state.probe_library_file_id` içine yaz.
-Bu referans kanonik `library_file_id` alanından ayrı kalır.
+First create a separate private, synthetic, disposable Library probe, for example
+`{"version":0,"data":{"probe_only":true,"marker":"initial"}}`. Include no real
+profile, ledger, recipients, email, or history. Store its returned reference in
+`installation.shared_state.probe_library_file_id`, separate from canonical
+`library_file_id`.
 
-CAS yeteneği kanıtlanmadan gerçek kanonik ledger'a hiçbir deneme yazısı yapma.
-Mevcut kurulumu sürdürürken kanonik referansı yalnız oku; sıfırlama, yerine
-probe koyma veya probe'a canlı veri kopyalama. Aşağıdaki bütün capability/stale
-yazıları yalnız bu yeni probe dosyasına gider.
+Never test CAS by writing to the real canonical ledger before CAS is verified.
+When resuming an installation, only read its canonical reference: do not reset
+it, substitute a probe, or copy live data into a probe. All capability/stale
+writes below target only the new disposable probe.
 
-Her görev aynı referansı tam okumalı. `has_more` varsa aynı dosya/sürümün bütün
-parçalarını tamamla veya güncel Library skill'iyle tam dosyayı materialize et.
-Tam `JSON.parse`/`json.loads` başarısı ve somut güncel provider sürümü gerekir.
-Bu sayı materialization metadata'sındaki `current_version_number` gibi gerçek
-bir değerden alınır; JSON içindeki `version` ile karıştırılmaz. Uygun bir
-tamsayı sürüm elde edilemiyorsa CAS aşaması eksiktir.
-Yeni Library kaydının ilk provider sürümü `0` olabilir; bu geçerli önkoşuldur.
-`last_observed_version` yalnız özel bir nottur; sonraki işlemde güncel remote
-sürümü yeniden oku. Kanonik JSON'un içinde kendi güncel provider sürümünü
-sakladığını varsayma.
+Every task must fully read the same reference. Complete all `has_more` pages
+for one file/version, or materialize the full file under current Library rules.
+Require successful `json.loads`/`JSON.parse` and a concrete current provider
+version, such as actual materialization metadata's `current_version_number`.
+Do not confuse this with the JSON domain `version`. A missing/non-integer
+provider version leaves CAS unverified. Provider version `0` is valid for a new
+file. `last_observed_version` is only a private note; reread the current remote
+version before each operation. Do not assume canonical JSON contains its own
+current provider version.
 
-Yazma ve readback yolu (CAS kanıtlanana kadar yalnız probe hedefinde):
+Write and readback sequence, targeting only the probe until CAS is established:
 
 ```python
 candidate = o.library_candidate(snapshot, changed_data, unique_operation_id)
-# candidate'ı yeni, 0600 bir özel JSON dosyasına yaz.
+# Write candidate to a new private JSON file with mode 0600.
 request = o.library_replace_args(probe_library_ref, actual_provider_version, candidate_path)
-# Ajan: library_replace_library_file(**request), ardından aynı dosyayı tam geri oku.
+# Agent: library_replace_library_file(**request), then read the same entire file back.
 o.verify_library_commit(candidate, full_readback, actual_provider_version, returned_new_version)
 ```
 
-Çatışma: aynı referansı yeniden oku, değişikliği uzlaştır; eski byte'larla veya
-sürüm önkoşulunu kaldırarak retry yapma. Timeout/sonuç belirsizliğinde önce tam
-readback ve `last_operation` ile uzlaş. Send rezervasyonu yazılamadıysa mail yok.
+On conflict, reread and reconcile; never retry old bytes or remove the version
+precondition. On timeout/uncertainty, reconcile full readback and `last_operation`
+first. If the send reservation cannot be committed, do not send email.
 
-**Gerçek iki Cloud görevi testi** (bu metin/test kodu testi geçmiş sayılmaz):
+**Real two-Cloud-task test**; this guide and offline tests do not establish it:
 
-1. Görev A'da yalnız probe dosyasının provider sürümü N'yi al. Rastgele A
-   işaretini CAS N ile yaz; tam readback ve yeni M sürümünü doğrula. Ajan özel
-   devam promptunu hazırlar: probe referansı, beklenen origin/HEAD, N/M ve
-   A adayının tam içerik hash'i içinde hazır olsun. Gerekli kurulum tercihleri
-   özel devam promptunda taşınabilir; probe'un sentetik içeriğine eklenmez.
-2. Kullanıcı aynı kayıtlı Cloud projesinde yeni görev açıp bu hazır promptu
-   verir. Görev B, A'nın yerel dizinine güvenmeden aynı **probe** referansını
-   tam okur ve A adayının sürüm/hash'ini doğrular; kanonik ledger'a yazmaz.
-3. B, yalnız sentetik probe içeriğiyle **eski N** sürümünde guarded replace
-   dener. Kesin sürüm çatışması beklenir. Sonra probe'u tam oku: A adayının
-   hash'i ve M aynı kalmalı. Provider önkoşulu yok sayarsa yalnız probe etkilenir;
-   test başarısızdır, kanonik yazma/gönderim açılmaz. Başka yazar, beklenmedik
-   sürüm değişimi veya belirsizlikte de dur; canlı kayıtta telafi denemesi yapma.
-4. B'nin yeni M sürümünde normal probe güncellemesi ve tam readback'i de geçerse
-   aynı bağlantı/araç/runtime için çapraz görev CAS kanıtını özel kurulum kaydına
-   yaz. Probe referansını kanonik referansa dönüştürme veya üretimde yeniden kullanma.
+1. In task A read only the probe's provider version N, write a random A marker
+   with CAS N, then verify full readback and new provider version M. Prepare a
+   private continuation prompt containing the probe reference, expected Git
+   origin/HEAD, N/M, and full candidate content hash. Needed setup preferences
+   may go in this private prompt, never in the synthetic probe's content.
+2. The user opens another task in the same saved Cloud project and supplies
+   that prompt. Task B independently reads the same **probe**, verifies A's
+   version/hash, and never writes the canonical ledger.
+3. B attempts guarded replacement using only synthetic probe content and
+   **stale N**. Require a definite version conflict. Fully reread the probe:
+   A's hash and M must be unchanged. If the provider ignores the precondition,
+   only the disposable probe is affected; CAS verification fails and canonical
+   writes/sending remain disabled. Stop on another writer, unexpected version,
+   or uncertain results, without compensating experiments on live state.
+4. B also updates the probe at current M and verifies full readback. Record the
+   successful cross-task CAS evidence for this connection/tool/runtime privately.
+   Never turn the probe reference into the canonical reference or reuse it in production.
 
-Bu test geçtikten sonra yeni kurulumda yerel `state.json` zarfının `data` alanına
-`profile`, `installation` ve `capabilities` kopyalarını ekle; ayrı kanonik dosyayı
-`create_library_file(file=...)` ile bir kez kaydet. Mevcut kurulumda yalnız mevcut
-kanonik referansla devam et. Gerçek referans `installation.shared_state.library_file_id`
-olur. Kanonik güncellemelerde yukarıdaki helper'a bu referansı ve o dosyanın yeni
-okunmuş sürümünü ver; probe'un referans/sürümünü taşıma. Bağlantı veya CAS yolu
-değişirse capability testini yine yeni, ayrı bir probe'da yap.
+After this passes, a new installation may add `profile`, `installation`, and
+`capabilities` copies to the local `state.json` envelope's `data`, then create
+one separate canonical Library file via `create_library_file(file=...)`. Resume
+an existing installation only with its existing canonical reference. Store it
+as `installation.shared_state.library_file_id`. For canonical updates, use
+that reference and its newly read provider version, never the probe's reference
+or version. A changed connection/CAS route needs another new disposable probe test.
 
-Kullanıcı bu teknik alanları elle doldurmaz. Ajan devam promptunu üretir; yeni
-görev açmak desteklenen UI ile yapılabilir. Çağrılabilir dispatch yokken varmış
-gibi bir API veya parent worker icat etme.
+Users do not fill technical fields manually. The agent prepares the continuation
+prompt and the user can open the next task in the supported UI. Do not invent
+an API or parent worker when callable dispatch is unavailable.
 
-Sonraki görevde test içeriği de erişilebilir olmalı. Onaylanan sentetik bundle'ın
-`raw` byte'larını ayrı, özel ve değiştirilmeyen bir `.eml` Library dosyasında tut.
-Kanonik `data.onboarding_artifact` kaydına gerçek dosya/sürüm referansını ve
-`o.bundle_contract(bundle)` sonucunu ekle. Bu manifest görsel byte'larını
-çoğaltmaz. Yeni görev o sürümün gerçek byte'larını getirip
-`o.restore_bundle(raw_bytes, saved_contract)` ile hash/zarf/CID kontrolünü yapar;
-sonra yeni test anahtarıyla `self_test_bundle` üretir. Eski `.local` klasörünü
-veya provider'daki gönderilmiş taslağı yeniden kullanmayı varsayma.
+Test content must also be available to subsequent tasks. Retain the approved
+synthetic bundle's exact `raw` bytes in a separate private immutable `.eml`
+Library file. Record its actual file/version reference and `o.bundle_contract(bundle)`
+in canonical `data.onboarding_artifact`; the manifest does not duplicate image
+bytes. The next task retrieves that version's actual bytes, restores them using
+`o.restore_bundle(raw_bytes, saved_contract)`, verifies hashes/envelope/CIDs, and
+creates a self-test bundle with a fresh test key. Do not assume old `.local`
+files or an already sent provider draft can be reused.
 
-## 4. Açık yetkiyle Gmail taslak → doğrulama → gönderim
+## 4. Authorized Gmail draft → verification → send
 
-Bu aşama yalnız kullanıcının kendi doğrulanmış adresine test yetkisiyle yapılır.
-Kanonik kayıtta bu test anahtarının sonuç/draft intent durumunu önce oku.
-Sent/sending/uncertain veya sonucu belirsiz create varsa yeni çağrı açma.
+Proceed only with authorization to test to the user's own verified address.
+First read this test key's results/draft intent in canonical state. Do not start
+a new call if a create result is uncertain or the send is sent/sending/uncertain.
 
-1. `data.draft_intents[test_key]` içine hesap, içerik/recipient hash ve tek
-   operation ID'li `requested` niyetini yukarıdaki CAS/readback ile yaz.
-2. Hazır `request` ile Gmail `create_draft` çağır. Dönen **gerçek draft_id ve
-   message_id** değerlerini kaydet. Alanlar belirsizse mevcut `list_drafts`
-   metadata'sıyla o taslağı çöz; mesaj ID'sini draft ID yerine geçirme. Oluşturma
-   sonucu belirsizse yeni taslak yaratma; önce mevcut taslaklarla uzlaştır.
-3. Aynı hesap ve gerçek message ID ile `read_email(format="raw")` çağır.
-   Cevabın tam base64url raw alanını `o.verify_gmail_raw(test, returned_raw)` ile
-   doğrula. Bu kontrol zarfı, plain/HTML ve bütün CID hash/byte'larını sınar.
-   Başarılı draft roundtrip'i ve gerçek draft/message kimliklerini CAS ile kaydet.
-4. `candidate = o.reserve_bundle(latest_snapshot, test, attempt_id)` üret;
-   guarded replace ve `verify_library_commit` ile **sending** kaydını doğrula.
-   Gerçek saat, hesap, alıcı ve mevcut açık yetkiyi son anda yeniden kontrol et;
-   `delivery.assert_send_allowed` için yalnız bu hesabın kendine-test profilini,
-   `self_test=True` ve `test/` anahtarını kullan.
-5. Yalnız `send_draft(link_id=verified_link, draft_id=actual_draft_id)` çağır.
-   Dönen provider mesajını ve aynı hesaptaki eşleşen Sent'i oku. Zarf/içerik/CID
-   kontrolünü tekrar yap; alıcının Inbox görünümünü ayrıca doğrula.
-6. `delivery.record_result` sonucunu `data.test_deliveries[test_key]` içinde
-   CAS/readback ile işle. Testte `advance_once`/`record_publication` çağırma;
-   üretim sayısı/geçmişi değişmez. Timeout/iptal kaydı uncertain kalır, kör retry yok.
+1. Persist `data.draft_intents[test_key]` with account, content/recipient hashes,
+   one operation ID, and `requested` status using CAS and readback.
+2. Call Gmail `create_draft` with the prepared request. Record the returned
+   **actual draft_id and message_id**. If ambiguous, resolve the actual draft
+   with available `list_drafts` metadata; never substitute a message ID for a
+   draft ID. Reconcile an uncertain creation with existing drafts before doing
+   anything else; do not create another draft.
+3. Read the same account's actual message via `read_email(format="raw")`.
+   Verify its full base64url raw field with `o.verify_gmail_raw(test, returned_raw)`.
+   This checks envelope, plain/HTML, and all CID hashes/bytes. Commit the successful
+   roundtrip and actual draft/message identifiers using CAS.
+4. Build `candidate = o.reserve_bundle(latest_snapshot, test, attempt_id)`;
+   commit guarded replacement and use `verify_library_commit` to confirm
+   **sending** state. Recheck real time, account, recipient, and explicit
+   authorization immediately before sending. For `delivery.assert_send_allowed`,
+   use only this account's self-test profile, `self_test=True`, and the `test/` key.
+5. Call only `send_draft(link_id=verified_link, draft_id=actual_draft_id)`.
+   Read the returned provider message and matching Sent evidence on the same
+   account. Verify envelope/content/CIDs again and check Inbox rendering separately.
+6. Commit `delivery.record_result` into `data.test_deliveries[test_key]` with
+   CAS/readback. Never call `advance_once`/`record_publication` for tests;
+   production history/counter stay unchanged. Timeout/cancellation remains uncertain;
+   no blind retry.
 
-Üretim akışı da aynı helper ve CAS yolunu kullanır; her gün yeni hazırlanmış
-bundle gerekir. `delivery.assert_send_allowed` ile gerçek gün/saat ve profil
-bayraklarını kontrol et. Sonuç + `advance_once` + `core.record_publication`
-aynı CAS içindedir. Kısmi onarımda mevcut delivery/eligible alıcıları koru;
-`reserve_bundle` yeni issue içindir, mevcut issue'yu resetleme yolu değildir.
+Production uses the same helper/CAS route with a newly prepared bundle every
+day. Check the real day/time and profile flags with `delivery.assert_send_allowed`.
+Commit result + `advance_once` + `core.record_publication` in the same CAS.
+For partial repair preserve existing delivery and eligible recipients;
+`reserve_bundle` creates a new issue, never resets an existing one.
 
-## 5. Scheduled test ve kurulumun bitişi
+## 5. Scheduled test and completion
 
-Mail testi ve iki görev CAS testi geçmeden düzenli yayın oluşturma. Scheduler
-şeması hedef Cloud projesini seçemiyor ve mevcut bağlamın o repo/shell'e ulaşacağı
-doğrulanamıyorsa bu aşamada dur: **manuel kullanım hazır, otomasyon eksik**.
-Kullanıcıdan API alanları istemek veya başka projeye dispatch yapmak çözüm değildir.
+Do not create recurring publication before both the email test and two-task CAS
+test pass. If the scheduler cannot target the correct Cloud project and actual
+repo/shell access cannot be verified, stop at **manual use ready, automation
+incomplete**. Asking the user for API fields or dispatching to another project
+is not a solution.
 
-Desteklenen hedef yolu ve açık schedule yetkisi varsa ajan `o.scheduled_test_prompt`
-ile gerçek kanonik referans/repo sürümü/yeni `test/` anahtarını içeren özel promptu
-üretir. Mevcut automation create çağrısına `title`, bu `prompt`, kullanıcının
-timezone'unda gerçek gelecek `schedule` ve uygun `timing_mode` verir. Hedef seçimi
-yalnız mevcut şemanın/UI'nın desteklediği alanlarla yapılır; hayali environment
-parametresi ekleme. Kabul edilen schedule kaydı yalnız kayıt kabulüdür.
+With a supported target and explicit schedule authorization, generate a private
+prompt with `o.scheduled_test_prompt`, including the actual canonical reference,
+repo revision, and a new `test/` key. Operational prompts default to English;
+pass `language="tr"` for Turkish instructions. This does not override the saved
+newsletter content language. Supply `title`, this `prompt`, an actual future
+`schedule` in the user's timezone, and appropriate `timing_mode` to the supported
+automation tool. Use only target fields exposed by the current schema/UI; do
+not invent an environment parameter. Schedule acceptance only establishes acceptance.
 
-Gerçek tetiklenmede repo/runtime, aynı Library dosyası ve CAS, aynı Gmail hesabı,
-yerel saat kapısı ve kendine-test sonucu yeniden kanıtlanmalı. Test gerçek saati
-bekler; `now/run_now` yerine gerçek scheduler tetiklemesi gerekir. Sonuç aynı
-özel kayda yazılır. `doctor --stage scheduled` ancak gerçek ve güncel kanıtla
-geçer; bayrağı/kanıt alanını elle açmak kurulum değildir.
+At the actual trigger, prove repo/runtime, same Library record/CAS, same Gmail
+account, local time gate, and self-test result again. Wait for the real scheduled
+time; `now/run_now` is not a scheduler trigger. Write results in the same private
+record. `doctor --stage scheduled` requires actual current evidence; manually
+setting flags or evidence fields does not establish setup.
 
-Sonra kullanıcının düzenli yayın yetkisi kapsamında profil bayraklarını ve
-onaylanan saati aynı kanonik kayıtta etkinleştir; mevcut test schedule'ını günlük
-yeni araştırma/prepare/CAS/draft/verify/send akışına dönüştür. Saat/konu/alıcı
-değişikliğini izin kapsamıyla eşleştir; ikinci sender/schedule yaratma.
-Profil bayrakları hash'i değiştirdiğinden etkilenen kanıtları güncel etkin
-profil ve gerçek okumalarla yeniden bağla; eski profile ait doktor sonucunu
-yeni yapılandırmaya taşıma.
+Then, within the user's recurring-publication authorization, enable profile
+flags and the approved time in the same canonical record. Convert the existing
+test schedule to daily fresh research/prepare/CAS/draft/verify/send; do not create
+a second sender/schedule. Match time/topic/recipient changes to the authorization
+scope. Since enabled flags change the profile hash, rebind affected evidence
+using actual reads and the active profile. Do not reuse a doctor result from
+an older profile.

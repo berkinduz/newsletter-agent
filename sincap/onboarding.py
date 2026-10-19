@@ -174,12 +174,27 @@ def reserve_bundle(snapshot, bundle, attempt_id):
     return library_candidate(snapshot, data, attempt_id)
 
 
-def scheduled_test_prompt(library_file_id, repository_revision, test_key):
+def scheduled_test_prompt(library_file_id, repository_revision, test_key, language="en"):
     """Private prompt for a scheduler that can actually reach this project's runtime."""
     require(all(isinstance(x, str) and x.strip() for x in (library_file_id, repository_revision, test_key))
             and test_key.startswith("test/"), "Recorded state/revision and test key required")
+    require(language in {"en", "tr"}, "Scheduled test prompt language must be en or tr")
+    if language == "en":
+        return ("Run the one-time scheduled self-test for the Sincap Post installation. "
+                "Follow the scheduled test steps in docs/onboarding.md. "
+                f"Canonical Library record: {library_file_id}; expected repository revision: {repository_revision}; "
+                f"test key: {test_key}. Verify the actual trigger time and runtime/repository identity. "
+                "If repository/shell access, the same complete record, version-guarded CAS, the correct account, "
+                "or explicit test authorization is missing, report the concrete blocker without sending mail. "
+                "Apply the real-time gate recorded in the state. Use only the verified sender's own address "
+                "and a single draft/send for this test key. Read the existing test result first; "
+                "do not resend if its status is sending, sent, or uncertain. "
+                "Commit provider and matching Sent evidence to the same record using CAS; "
+                "do not advance production history or the issue counter. "
+                "Do not take over another project, account, dispatcher, or automation. "
+                "Do not enable recurring publication automatically.")
     return ("Sincap Post kurulumunun tek seferlik scheduled self-test aşamasını yürüt. "
-            "docs/onboarding.md içindeki scheduled test adımlarını izle. "
+            "docs/tr/onboarding.md içindeki scheduled test adımlarını izle. "
             f"Kanonik Library kaydı: {library_file_id}; beklenen repo sürümü: {repository_revision}; "
             f"test anahtarı: {test_key}. Gerçek tetiklenme saatini ve runtime/repo kimliğini doğrula. "
             "Repo/shell, aynı tam kayıt, sürüm korumalı CAS, doğru hesap veya açık test yetkisi yoksa "

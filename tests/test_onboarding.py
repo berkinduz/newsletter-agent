@@ -205,3 +205,17 @@ class SharedStateOnboardingTests(unittest.TestCase):
             o.scheduled_test_prompt('fixture-library-reference', 'fixture-revision', 'production/fixture')
         with self.assertRaises(ValueError):
             o.scheduled_test_prompt('', 'fixture-revision', 'test/fixture')
+
+    def test_scheduled_prompt_defaults_to_english_and_preserves_turkish_option(self):
+        args = ('fixture-library-reference', 'fixture-revision', 'test/fixture')
+        english = o.scheduled_test_prompt(*args)
+        turkish = o.scheduled_test_prompt(*args, language='tr')
+        self.assertIn('docs/onboarding.md', english)
+        self.assertIn('do not resend', english)
+        self.assertIn('docs/tr/onboarding.md', turkish)
+        self.assertIn('tekrar gönderme', turkish)
+        for prompt in (english, turkish):
+            for value in args:
+                self.assertIn(value, prompt)
+        with self.assertRaises(ValueError):
+            o.scheduled_test_prompt(*args, language='de')

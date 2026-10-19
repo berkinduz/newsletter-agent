@@ -34,6 +34,8 @@ def main():
     init = commands.add_parser("init", help="Create fresh local config; never overwrite existing state")
     init.add_argument("--directory", type=Path, default=Path(".local"))
     init.add_argument("--profile-id", default="my-newsletter")
+    init.add_argument("--language", choices=("en", "tr"), default="en",
+                      help="Newsletter starter language, including labels and sample topics (default: en)")
     doctor = commands.add_parser("doctor", help="Check local prerequisites and recorded capability evidence")
     doctor.add_argument("--profile", type=Path, default=Path(".local/profile.json"))
     doctor.add_argument("--capabilities", type=Path, default=Path(".local/capabilities.json"))
@@ -50,7 +52,8 @@ def main():
     try:
         if args.command == "init":
             require(not args.directory.exists(), "Directory exists; inspect and preserve its current state")
-            initial_profile = load(ROOT / "examples/profile.json")
+            examples = ROOT / "examples" / ("tr" if args.language == "tr" else "")
+            initial_profile = load(examples / "profile.json")
             initial_profile["id"] = args.profile_id
             validate_profile(initial_profile)
             args.directory.mkdir(parents=True, mode=0o700)
@@ -65,7 +68,7 @@ def main():
         if args.command == "doctor":
             record = load(args.capabilities) if args.capabilities.exists() else {"schema_version": 1}
             gaps = capability_gaps(record, args.stage, now, profile)
-            report = {"offline_profile": "valid", "stage": args.stage, "capability_gaps": gaps,
+            report = {"offline_profile": "valid", "language": profile["language"], "stage": args.stage, "capability_gaps": gaps,
                       "image_decoder": "available" if importlib.util.find_spec("PIL") else "unavailable",
                       "delivery_enabled": profile["delivery"]["enabled"], "schedule_enabled": profile["schedule"]["enabled"],
                       "remote_probe_performed": False, "profile_sha256": digest(profile),

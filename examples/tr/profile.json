@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "my-newsletter",
+  "title": "Sincap Post",
+  "language": "tr",
+  "timezone": "Etc/UTC",
+  "topics": [
+    {"id": "science", "title": "Bilim", "visual_priority": true},
+    {"id": "culture", "title": "Kültür", "visual_priority": false}
+  ],
+  "sources": [
+    {"id": "demo-science", "name": "Örnek Bilim", "url": "https://science.example.invalid/feed", "enabled": true, "priority": 1},
+    {"id": "demo-culture", "name": "Örnek Kültür", "url": "https://culture.example.invalid/", "enabled": true, "priority": 2}
+  ],
+  "excluded_sources": [],
+  "length": {"target_minutes": 4, "min_words": 150, "max_words": 900, "max_articles": 5},
+  "freshness": {"initial_lookback_hours": 24},
+  "images": {"enabled": true},
+  "greeting": "Merhaba,",
+  "signature": ["Bir sonraki okumada görüşmek üzere."],
+  "labels": {"issue": "Sayı", "source": "Kaynak", "comment": "Bir düşünce", "minutes": "dakika", "links_extra": "Bağlantılardaki okumalar ayrıca"},
+  "delivery": {"enabled": false, "sender": "owner@example.invalid", "recipients": [{"id": "self", "email": "owner@example.invalid"}]},
+  "schedule": {"enabled": false, "daily_at": "09:00"}
+}

@@ -1,50 +1,58 @@
-# Okura giden içerik
+# Reader-facing content
 
-Profilde seçilen konular, kaynaklar, dil ve uzunluk esastır. Her gün yeniden
-araştır; eski sayının metni, fotoğrafı veya demosu yeni sayı girdisi değildir.
-Pencere son başarılı araştırma kesiminden başlar; ilk kurulumda lookback
-kullanılır. Kaynakların teknik erişimi editoryal güvenilirlik veya bağımsız
-teyit değildir. Aynı ajans metninin kopyalarını ayrı teyit sayma.
+**English** · [Türkçe](tr/editorial.md)
 
-Yalnız yeterli gövdesi okunmuş içerikten kısa, özgün özet yaz. Haber, köşe
-yazısı, deneme, röportaj, araştırma haberi ve özgün araştırmayı ayır. Yayın,
-güncelleme, olay ve çekim tarihlerini karıştırma. Yeni öne çıkan eski yazıyı
-yeni haber; bir dergi sayı tarihini çalışma tarihi gibi sunma. Bu çekirdek
-pencere dışındaki eski metni otomatik seçmez.
+Respect the profile's topics, sources, language, and length. Research anew every
+day; yesterday's text, photographs, and demo are not today's input. The window
+starts at the last successful research cutoff, or the configured lookback on
+first use. Technical source access does not establish editorial reliability or
+independent confirmation. Copies of one wire story are not separate confirmation.
 
-Kaynağa doğal atıf yap: “İnceleme, eserin kent hayatına yaklaşımı üzerinde
-duruyor.” Kitabı okumak veya filmi izlemek gibi birinci elden deneyim uydurma.
-“Kaynağı okuyabildik”, “kitabı okumadık” veya araç/üretim kontrolü açıklamalarını
-okura taşıma. Önemli yöntem, örneklem ve belirsizlik ise sonuçla ilgili içerik
-bilgisidir; gerektiği kadar kısa ve doğal anlatılır. Korelasyon nedensellik
-diye yazılmaz. Uzun metnin tamamını çevirip yeniden yayımlama.
+Write the opening, story titles/kinds, original summaries, commentary, closing
+question, and image alt text/credits in the chosen newsletter language. Keep
+necessary proper names and accurate attribution. The profile supplies greeting,
+signature, section titles, and labels; Python does not translate source text.
 
-Yorum, haber özetinden ayrı ince sol çizgili blokta kalır. Tasarım amacıyla
-yorumları kaldırma veya hepsini mekanik kısaltma. Profilin imzası kullanılmalı;
-başka bir kurulumun kişisel imzası veya hitabı taşınmaz.
+Summarize only sufficiently read bodies. Distinguish news, columns, essays,
+interviews, research coverage, and original research. Keep publication, update,
+event, and photo dates distinct. Do not present a newly popular old article as
+new reporting, or a journal issue date as a study date. The core does not
+automatically select old texts outside the freshness window.
 
-## Görsel ve yerleşim
+Attribute naturally: “The review examines the work's approach to urban life.”
+Do not invent firsthand experiences such as reading a book or seeing a film.
+Keep access reports and production checks out of the newsletter. Material
+methods, sample limitations, and scientific uncertainty belong in the substance
+where relevant. Do not describe correlation as causation or republish a full
+translation of a long source.
 
-Görsel, ilgili haberin olayını, kişisini, ürününü veya eserini somutlaştıran
-gerçek fotoğraf ya da özgün kaynak görseli olabilir. Bilgi grafiği olma şartı
-yoktur. AI görseli, alakasız stok, logo dolgusu ve bölüm afişi kullanma. Sabit
-görsel kotası yoktur. Her sayı için o sayının haberlerine göre yeniden seç.
+Keep commentary separate from the summary in its thin left-bordered block. Do
+not remove or mechanically shorten every comment for design purposes. Use the
+profile's signature, without importing another installation's personal sign-off
+or greeting.
 
-Yerleşim: küçük yeşil bölüm başlığı → serif haber başlığı → kısa tarih/kaynak
-→ ilgili görsel ve tek kısa kredi → özet → ayrı yorum → doğrudan kaynak.
-Bölüm başlığı 15px/700, haber başlığı genişte 30px ve dar ekranda 26px'tir.
-İnce ayırıcı bölüm başlangıcında bulunur. Gövdede tablo düzeni ve satır içi
-stiller kullanılır; JavaScript, data URI veya flex/grid gerektirmez.
+## Images and layout
 
-`visual_priority: true` konularda güçlü bir haber görseli hedefle. Görsel
-eklenmezse kaynak ve ilgili alternatif için en az iki gerçek arama/engel kaydı
-gerekir; diğer konularda en az bir inceleme gerekir. Görseller profil tercihiyle
-kapatılmışsa açık text_only kararı kullan. Sentetik demodaki görselsizlik,
-gerçek haberlerde arama yapılmış olduğu anlamına gelmez.
+Use a real photograph or original source image showing the story's event,
+person, product, or work. It need not be an infographic. Do not use AI-generated
+images, unrelated stock, filler logos, or section banners. There is no fixed
+image quota; make a fresh choice for the current issue.
 
-Pikselleri aç; olay/tarih/kredi/alt metin ve kullanım kapsamını doğrula. Normal
-kamu erişimi, kullanım hakkını tek başına kanıtlamaz. Kredi kısa, bağlı kaynak
-sayfası doğru olmalı. Ayrıntılı hak/erişim/araç notları yalnız özel çalışma
-kaydına yazılır. Güvenlik reddi veya erişim engelini aşma; ilgili erişilebilir
-alternatifi değerlendir veya somut gerekçeyle görseli çıkar. Gönderilmiş sayıyı
-bu iyileştirmeler için yeniden üretme ya da gönderme.
+Order: small green section heading → serif story headline → short date/source
+line → relevant image and one short credit → summary → separate commentary →
+direct source. Section headings use 15px/700; story titles use 30px at wide and
+26px at narrow widths. Place a thin divider at each section's start. Email HTML
+uses tables and inline styles, without JavaScript, data URIs, flex, or grid.
+
+Aim for a strong story image for topics with `visual_priority: true`. Omitting
+one requires at least two real search/obstacle records covering the source and
+a relevant alternative; other topics require at least one. If the profile
+disables images, record an explicit `text_only` decision. A synthetic demo's
+lack of images does not establish a real search.
+
+View the pixels and check event, date, credit, alt text, and intended use rights.
+Public access alone does not prove reuse rights. Keep credits short and link to
+the correct source page. Detailed rights/access/tool notes stay private. Stop
+at security or access denials; consider an accessible relevant alternative or
+omit the image with a concrete reason. Do not regenerate or resend an already
+sent issue just to apply these improvements.

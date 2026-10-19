@@ -100,7 +100,9 @@ def inspect(root=ROOT, staged=False):
     ignore_lines = set(ignore.splitlines())
     if "*" not in ignore_lines or any("!/" + name not in ignore_lines for name in names):
         errors.append("Git ignore must explicitly allow each manifest file")
-    for name in ("examples/profile.json", "examples/capabilities.json", "examples/issue.json"):
+    examples = ("examples/profile.json", "examples/capabilities.json", "examples/issue.json",
+                "examples/tr/profile.json", "examples/tr/issue.json")
+    for name in examples:
         try:
             example = json.loads(files[name])
             if name.endswith("profile.json") and (example["delivery"]["enabled"] is not False or example["schedule"]["enabled"] is not False):

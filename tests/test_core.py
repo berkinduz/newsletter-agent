@@ -10,9 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2030, 1, 2, 8, 30, tzinfo=timezone.utc)
 
 
-def fixtures():
-    profile = json.loads((ROOT / "examples/profile.json").read_text())
-    issue = json.loads((ROOT / "examples/issue.json").read_text())
+def fixtures(language="en"):
+    examples = ROOT / "examples" / ("tr" if language == "tr" else "")
+    profile = json.loads((examples / "profile.json").read_text(encoding="utf-8"))
+    issue = json.loads((examples / "issue.json").read_text(encoding="utf-8"))
     return profile, issue
 
 
@@ -92,10 +93,10 @@ class SelectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "New research"):
             self.choose()
         self.history = c.new_history()
-        self.issue["language"] = "en"
+        self.issue["language"] = "tr"
         with self.assertRaisesRegex(ValueError, "language"):
             self.choose()
-        self.issue["language"] = "tr"
+        self.issue["language"] = self.profile["language"]
         self.profile["timezone"] = "Pacific/Honolulu"
         with self.assertRaisesRegex(ValueError, "timezone"):
             self.choose()
