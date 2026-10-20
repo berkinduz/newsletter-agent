@@ -1,4 +1,4 @@
-# 🐿️ Sincap Post
+# 🐿️ Sincap Newsletter Agent
 
 [English](README.md) · **Türkçe**
 
